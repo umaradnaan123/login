@@ -1,128 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Firebase Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f1f1f1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .login-container {
-      background: #fff;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
-      box-sizing: border-box;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    input[type="text"], input[type="password"] {
-      width: 100%;
-      padding: 12px 15px;
-      margin: 8px 0;
-      display: block;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #007bff;
-      border: none;
-      color: white;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .error {
-      color: red;
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    .success {
-      color: green;
-      margin-top: 10px;
-      text-align: center;
-    }
-  </style>
+  <title>Firebase Auth</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 <body>
-
-<div class="login-container">
   <h2>Login</h2>
-  <input type="text" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
-  <button id="loginBtn">Login</button>
-  <div class="error" id="errorMsg"></div>
-  <div class="success" id="successMsg"></div>
-</div>
+  <input type="email" id="loginEmail" placeholder="Email"><br>
+  <input type="password" id="loginPassword" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <h2>Signup</h2>
+  <input type="email" id="signupEmail" placeholder="Email"><br>
+  <input type="password" id="signupPassword" placeholder="Password"><br>
+  <button onclick="signup()">Signup</button>
 
-<!-- Firebase Config -->
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDSLywpiRgOVWVSLerNYAQDMLrw5ZtQzB0",
-    authDomain: "adnaan-6ec2a.firebaseapp.com",
-    projectId: "adnaan-6ec2a",
-    storageBucket: "adnaan-6ec2a.firebasestorage.app",
-    messagingSenderId: "70529683891",
-    appId: "1:70529683891:web:6e7be129148f4d00b97bc6",
-    measurementId: "G-R5TBEWVEJR"
-  };
+  <p id="message"></p>
 
-  firebase.initializeApp(firebaseConfig);
-</script>
+  <script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDSLywpiRgOVWVSLerNYAQDMLrw5ZtQzB0",
+      authDomain: "adnaan-6ec2a.firebaseapp.com",
+      projectId: "adnaan-6ec2a",
+      storageBucket: "adnaan-6ec2a.appspot.com",
+      messagingSenderId: "70529683891",
+      appId: "1:70529683891:web:6e7be129148f4d00b97bc6",
+      measurementId: "G-R5TBEWVEJR"
+    };
 
-<!-- Login Script -->
-<script>
-  const loginBtn = document.getElementById("loginBtn");
-  const errorMsg = document.getElementById("errorMsg");
-  const successMsg = document.getElementById("successMsg");
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
 
-  loginBtn.addEventListener("click", function () {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+    const auth = firebase.auth();
 
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        errorMsg.textContent = "";
-        successMsg.textContent = "Login successful! Redirecting...";
-        // Optional redirect
-        setTimeout(() => {
-          window.location.href = "dashboard.html"; // replace with your dashboard
-        }, 2000);
-      })
-      .catch((error) => {
-        successMsg.textContent = "";
-        errorMsg.textContent = error.message;
-      });
-  });
-</script>
+    function signup() {
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
 
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          document.getElementById("message").innerText = "Signup successful!";
+        })
+        .catch((error) => {
+          document.getElementById("message").innerText = "Signup error: " + error.message;
+        });
+    }
+
+    function login() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          document.getElementById("message").innerText = "Login successful!";
+        })
+        .catch((error) => {
+          document.getElementById("message").innerText = "Login error: " + error.message;
+        });
+    }
+  </script>
 </body>
 </html>
